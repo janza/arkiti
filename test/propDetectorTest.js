@@ -19,7 +19,6 @@ const tests = {
 }
 const babelConfig = {
   plugins: [
-    ['transform-react-jsx', {}],
     [propDetector, {}]
   ]
 }
@@ -43,7 +42,7 @@ Object.keys(tests).forEach(function (fileName) {
   })
 })
 
-test('webpack', t => {
+test.skip('webpack', t => {
   webpack(
     {
       entry: path.join(__dirname, './files/compound.js'),
@@ -57,7 +56,12 @@ test('webpack', t => {
             test: /\.js/,
             use: {
               loader: 'babel-loader',
-              options: babelConfig
+              options: {
+                plugins: [
+                  // [propDetector, {}],
+                  ['transform-react-jsx', {}]
+                ]
+              }
             }
           }
         ]
