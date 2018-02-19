@@ -1,6 +1,6 @@
 const React = require('react')
 
-export default class extends React.Component {
+export default class Test extends React.Component {
   constructor () {
     super()
     this.state = { metadata: '' }
@@ -36,3 +36,5 @@ export default class extends React.Component {
       : null
   }
 }
+
+console.log('hello')

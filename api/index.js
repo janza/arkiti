@@ -1,9 +1,9 @@
 const express = require('express')
 const fs = require('fs')
 const path = require('path')
-const babel = require('babel-core')
-const detective = require('babel-plugin-detective')
-const propDetector = require('../lib/propDetector')
+// const babel = require('babel-core')
+// const detective = require('babel-plugin-detective')
+const compiler = require('../lib/compiler')
 
 const router = express.Router()
 
@@ -15,29 +15,15 @@ router.get('/fs', (req, res) => {
 })
 
 router.get('/deps', (req, res) => {
-  babel.transformFile(
-    req.query.fileName,
-    {
-      plugins: [
-        ['detective', {}],
-        ['transform-react-jsx', { pragma: 'console.log' }],
-        [propDetector, {}]
-      ]
-    },
-    (err, result) => {
-      if (err) {
-        res.status(500)
-        return res.send({
-          error: `Failed to process ${req.query.fileName} ${err}`
-        })
-      }
-      const metadata = detective.metadata(result)
-      res.json({
-        metadata: metadata,
-        props: Array.from(result.metadata.props || [])
-      })
-    }
-  )
+  fs.readFile(req.query.fileName, (err, fileContents) => {
+    if (err) return res.json({error: err})
+
+    compiler.run(fileContents, (err, output) => {
+      if (err) return res.json({error: err})
+
+      res.json({contents: output.stats + output.contents.toString()})
+    })
+  })
 })
 
 router.get('/dir', (req, res) => {

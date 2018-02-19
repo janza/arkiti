@@ -20,7 +20,7 @@ var debounce = function (func) {
   }
 }
 
-export default class extends React.Component {
+export default class Editor extends React.Component {
   constructor () {
     super()
     this.onChange = debounce(this.onChange.bind(this))
